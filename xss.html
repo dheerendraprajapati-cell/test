@@ -1,36 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Test Page</title>
+  <title>ALERT</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-      background: #f0f0f0;
-    }
-    .box {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      display: inline-block;
-      font-size: 18px;
-    }
-    h1 { color: #007bff; }
+    body { display: none; }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>SSRF TEST SUCCESS!</h1>
-    <p>This page was loaded via SSRF.</p>
-    <p><strong>Domain:</strong> <span id="domain"></span></p>
-    <p><strong>URL:</strong> <span id="url"></span></p>
-  </div>
-
   <script>
-    document.getElementById('domain').textContent = document.domain;
-    document.getElementById('url').textContent = location.href;
+    alert('XSS VIA SSRF CONFIRMED!\n\nThis alert proves:\n- SSRF works\n- JavaScript executes\n- In-app browser is vulnerable');
   </script>
 </body>
 </html>
